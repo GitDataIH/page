@@ -3,7 +3,13 @@ const origFetch = window.fetch;
 window.fetch = (url, init, ...args) => {
 	if (typeof url === "string") {
 		if (url.includes("/access_token")) {
-			url = url.replace("player_type=site", "player_type=thunderdome");
+			if (document.querySelector('[data-test-selector="ad-banner-default-text"]')) {
+				a = document.querySelector('[data-a-target="ffz-player-reset-button"]');
+				clickEvent = document.createEvent('MouseEvents');
+				clickEvent.initEvent('dblclick', true, true);
+				a.dispatchEvent(clickEvent);
+			}
+			url = url.replace("player_type=site", "player_type=embed");
 		} else if (
 			url.includes("/gql") &&
 			init &&
@@ -11,7 +17,7 @@ window.fetch = (url, init, ...args) => {
 			init.body.includes("PlaybackAccessToken")
 		) {
 			const newBody = JSON.parse(init.body);
-			newBody.variables.playerType = "thunderdome";
+			newBody.variables.playerType = "facebook";
 			init.body = JSON.stringify(newBody);
 		}
 	}
